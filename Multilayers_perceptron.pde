@@ -1,8 +1,7 @@
 
-//int[] layers = new int[]{2, 3, 5, 3, 1};
-Network network = new Network(new int[]{2, 10, 1});
+Network network = new Network(new int[]{7, 12, 12, 10});
 /*
-float[][] input = new float[][]{ //Plus ou moins grand
+float[][] input = new float[][]{ //Learn to compare 2 numbers
  {12, 6}, 
  {10, 1}, 
  {0, 60}, 
@@ -26,8 +25,8 @@ float[][] input = new float[][]{ //Plus ou moins grand
  {0}};
  */
 
-
-float[][] input = new float[][]{  //Aléatoire
+/*
+float[][] input = new float[][]{  //Learn to solve random problem
  {2, 6}, 
  {10, 1}, 
  {20, 60}, 
@@ -49,9 +48,10 @@ float[][] input = new float[][]{  //Aléatoire
  {0}, 
  {0}, 
  {1}};
+ */
  
-/*
-float[][] input = new float[][]{
+
+float[][] input = new float[][]{  //Learn to predict number in a 7 segments diplay
   {1, 1, 1, 0, 1, 1, 1}, 
   {0, 0, 1, 0, 0, 1, 0}, 
   {1, 0, 1, 1, 1, 0, 1}, 
@@ -73,14 +73,15 @@ float[][] target = new float[][]{
   {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, 
   {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, 
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 1}};
-*/
+  
+  float[] test = new float[] {0, 0, 1, 1, 0, 1, 0};
+  float[] result = new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+
 float[] output;
-//float[] result = new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-//float[] test = new float[] {0, 0, 1, 1, 0, 1, 0};
-
-float[] exempleErrors = new float[input.length];
-float   setError;
+float[] errors = new float[input.length];
+float   datasetError;
 int n = 0;
 
 void setup ()
@@ -94,43 +95,29 @@ void setup ()
 
 void draw()
 {
-  for (int i = 0; i < input.length; i++)
+  for (int i = 0; i < input.length; i++)      //Train with all exemples
   {
-    exempleErrors[i] = 0;
-    output = network.propagation(input[i]);
-    network.learn(target[i], output);
+    errors[i] = 0;
+    output = network.propagation(input[i]);  //Ask NN for a answer
+    network.learn(target[i], output);        //Learn with right answer
     for (int j = 0; j < output.length; j++)
     {
-      println("Target " + i + " : " + target[i][j] + " / Output : " + output[j]);
+      println("Target : " + target[i][j] + " / Output : " + output[j]);
       if (target[i][j] == 1)
-        exempleErrors[i] += abs(target[i][j] - output[j]);
+        errors[i] += abs(target[i][j] - output[j]);  //Sum of output neuron's errors
     }
-    exempleErrors[i] /= output.length;
+    errors[i] /= output.length;              //Compute lost function
     println("New exemple...");
   }
 
-  setError = 0;
-  for (int i = 0; i < input.length; i++)
-    setError += exempleErrors[i];
-  setError /= input.length;
+  datasetError = 0;
+  for (int i = 0; i < input.length; i++)    //Sum of errors
+    datasetError += errors[i];
+  datasetError /= input.length;
 
- // if (setError < 0.05)
-   // testNN();
-
-  println("-------------------------------- Try n°" + n);
+  println("-------------------------------- Try n°" + n++);
   print(network);
-  n++;
 }
-
-
-
-
-//void testNN()
-//{
-//  result = network.propagation(test);
-//  for (int j = 0; j < result.length; j++)
-//    println("Probabilitee " + j + " : " + result[j]);
-//}
 
 
 
@@ -165,5 +152,5 @@ void  print(Network NN)
     }
   }
   fill(0);
-  text("Average error : " + setError * 100 + "%", width / 4, height / 20);
+  text("Average error : " + datasetError * 100 + "%", width / 4, height / 20);
 }

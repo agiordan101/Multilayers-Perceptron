@@ -26,11 +26,11 @@ class Network {
     {
       if (i > 0)
       {
-        input = new float[output.length];
+        input = new float[output.length];            //output -> input
         for (int j = 0; j < output.length; j++)
           input[j] = output[j];
       }
-      output = new float[layers[i].length];
+      output = new float[layers[i].length];          //Propagation
       for (int j = 0; j < layers[i].length; j++)
         output[j] = layers[i][j].propagation(input);
     }
@@ -44,12 +44,12 @@ class Network {
 
     for (int i = layers.length - 1; i >= 0; i--)
     {
-      if (i == layers.length - 1)
+      if (i == layers.length - 1)                          //Last layer learn with the target data
         for (int j = 0; j < layers[i].length; j++)
           layers[i][j].learn(target[j], output[j]);
       else
       {
-        for (int j = 0; j < layers[i].length; j++)
+        for (int j = 0; j < layers[i].length; j++)         //Other layers learn with orders of their next layers (Gradient descent)
           layers[i][j].learn(layers[i + 1]);
       }
     }
