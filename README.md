@@ -1,2 +1,2 @@
 # Multilayers-Perceptron
-A simple Neural Network object, create with Perceptron algorithm
+A simple Neural Network object, made with Perceptron algorithm / gradient descent
